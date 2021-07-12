@@ -10,7 +10,18 @@ provider:
 
 functions:
   weatherGPSIoT:
-    handler: handler.weatherGPSIoT
+    handler: weatherGPSIoTLambda.weatherGPSIoT
+  weatherGPSIoTWeb:
+    handler: index.handler
     events:
-      - http: ANY /
-      - http: 'ANY {proxy+}'
+      - http:
+          method: POST
+          path: /
+          cors: true
+  rip:
+    handler: index.handler
+    events:
+      - http:
+          method: GET
+          path: /fuck
+          cors: true

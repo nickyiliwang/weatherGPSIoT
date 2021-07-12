@@ -77,6 +77,18 @@
         "LogGroupName": "/aws/lambda/weathergpsiot-dev-weatherGPSIoT"
       }
     },
+    "WeatherGPSIoTWebLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/weathergpsiot-dev-weatherGPSIoTWeb"
+      }
+    },
+    "RipLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/weathergpsiot-dev-rip"
+      }
+    },
     "IamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -161,9 +173,9 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/weathergpsiot/dev/1626090216785-2021-07-12T11:43:36.785Z/weathergpsiot.zip"
+          "S3Key": "serverless/weathergpsiot/dev/1626094546729-2021-07-12T12:55:46.729Z/weathergpsiot.zip"
         },
-        "Handler": "handler.weatherGPSIoT",
+        "Handler": "weatherGPSIoTLambda.weatherGPSIoT",
         "Runtime": "nodejs12.x",
         "FunctionName": "weathergpsiot-dev-weatherGPSIoT",
         "MemorySize": 1024,
@@ -179,14 +191,84 @@
         "WeatherGPSIoTLogGroup"
       ]
     },
-    "WeatherGPSIoTLambdaVersionbeAtyDVzRsvem7Qn3DVBvnu0dEP39Wczc3UMdBnQuQs": {
+    "WeatherGPSIoTWebLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/weathergpsiot/dev/1626094546729-2021-07-12T12:55:46.729Z/weathergpsiot.zip"
+        },
+        "Handler": "index.handler",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "weathergpsiot-dev-weatherGPSIoTWeb",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "WeatherGPSIoTWebLogGroup"
+      ]
+    },
+    "RipLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/weathergpsiot/dev/1626094546729-2021-07-12T12:55:46.729Z/weathergpsiot.zip"
+        },
+        "Handler": "index.handler",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "weathergpsiot-dev-rip",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "RipLogGroup"
+      ]
+    },
+    "WeatherGPSIoTLambdaVersionOsLSFsss4gj8zKW9avVksVGwWmtTqXuwnJ5BoMc": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "WeatherGPSIoTLambdaFunction"
         },
-        "CodeSha256": "AD1kINV3FRTCPdOYbvS6fSPO/vgM603StretPdl0hws="
+        "CodeSha256": "nZsQjgzOA0sDnA4ITvXZgcXCgP8JRIOlbi5LRqtTWa4="
+      }
+    },
+    "WeatherGPSIoTWebLambdaVersion5LAJS5H6LP2hUODOhB2ho76M6Gqhc5pJgSu8Nw5tlA": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "WeatherGPSIoTWebLambdaFunction"
+        },
+        "CodeSha256": "nZsQjgzOA0sDnA4ITvXZgcXCgP8JRIOlbi5LRqtTWa4="
+      }
+    },
+    "RipLambdaVersionoEXKtrQXf5fEXBp35lmgMV29EDYjBC1nfLhzgNNVaI": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "RipLambdaFunction"
+        },
+        "CodeSha256": "nZsQjgzOA0sDnA4ITvXZgcXCgP8JRIOlbi5LRqtTWa4="
       }
     },
     "ApiGatewayRestApi": {
@@ -201,7 +283,7 @@
         "Policy": ""
       }
     },
-    "ApiGatewayResourceProxyVar": {
+    "ApiGatewayResourceFuck": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "ParentId": {
@@ -210,16 +292,109 @@
             "RootResourceId"
           ]
         },
-        "PathPart": "{proxy+}",
+        "PathPart": "fuck",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
       }
     },
-    "ApiGatewayMethodAny": {
+    "ApiGatewayMethodOptions": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "HttpMethod": "ANY",
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "ResponseTemplates": {
+                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodFuckOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+              },
+              "ResponseTemplates": {
+                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceFuck"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
         "RequestParameters": {},
         "ResourceId": {
           "Fn::GetAtt": [
@@ -250,7 +425,7 @@
                 ":lambda:path/2015-03-31/functions/",
                 {
                   "Fn::GetAtt": [
-                    "WeatherGPSIoTLambdaFunction",
+                    "WeatherGPSIoTWebLambdaFunction",
                     "Arn"
                   ]
                 },
@@ -262,16 +437,16 @@
         "MethodResponses": []
       },
       "DependsOn": [
-        "WeatherGPSIoTLambdaPermissionApiGateway"
+        "WeatherGPSIoTWebLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayMethodProxyVarAny": {
+    "ApiGatewayMethodFuckGet": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "HttpMethod": "ANY",
+        "HttpMethod": "GET",
         "RequestParameters": {},
         "ResourceId": {
-          "Ref": "ApiGatewayResourceProxyVar"
+          "Ref": "ApiGatewayResourceFuck"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -296,7 +471,7 @@
                 ":lambda:path/2015-03-31/functions/",
                 {
                   "Fn::GetAtt": [
-                    "WeatherGPSIoTLambdaFunction",
+                    "RipLambdaFunction",
                     "Arn"
                   ]
                 },
@@ -308,10 +483,10 @@
         "MethodResponses": []
       },
       "DependsOn": [
-        "WeatherGPSIoTLambdaPermissionApiGateway"
+        "RipLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1626090204106": {
+    "ApiGatewayDeployment1626094533456": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -320,16 +495,55 @@
         "StageName": "dev"
       },
       "DependsOn": [
-        "ApiGatewayMethodAny",
-        "ApiGatewayMethodProxyVarAny"
+        "ApiGatewayMethodOptions",
+        "ApiGatewayMethodFuckOptions",
+        "ApiGatewayMethodPost",
+        "ApiGatewayMethodFuckGet"
       ]
     },
-    "WeatherGPSIoTLambdaPermissionApiGateway": {
+    "WeatherGPSIoTWebLambdaPermissionApiGateway": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
           "Fn::GetAtt": [
-            "WeatherGPSIoTLambdaFunction",
+            "WeatherGPSIoTWebLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "RipLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "RipLambdaFunction",
             "Arn"
           ]
         },
@@ -374,10 +588,28 @@
     "WeatherGPSIoTLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "WeatherGPSIoTLambdaVersionbeAtyDVzRsvem7Qn3DVBvnu0dEP39Wczc3UMdBnQuQs"
+        "Ref": "WeatherGPSIoTLambdaVersionOsLSFsss4gj8zKW9avVksVGwWmtTqXuwnJ5BoMc"
       },
       "Export": {
         "Name": "sls-weathergpsiot-dev-WeatherGPSIoTLambdaFunctionQualifiedArn"
+      }
+    },
+    "WeatherGPSIoTWebLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "WeatherGPSIoTWebLambdaVersion5LAJS5H6LP2hUODOhB2ho76M6Gqhc5pJgSu8Nw5tlA"
+      },
+      "Export": {
+        "Name": "sls-weathergpsiot-dev-WeatherGPSIoTWebLambdaFunctionQualifiedArn"
+      }
+    },
+    "RipLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "RipLambdaVersionoEXKtrQXf5fEXBp35lmgMV29EDYjBC1nfLhzgNNVaI"
+      },
+      "Export": {
+        "Name": "sls-weathergpsiot-dev-RipLambdaFunctionQualifiedArn"
       }
     },
     "ServiceEndpoint": {
