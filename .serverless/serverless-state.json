@@ -187,7 +187,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/weathergpsiot/dev/1626094546729-2021-07-12T12:55:46.729Z/weathergpsiot.zip"
+                "S3Key": "serverless/weathergpsiot/dev/1626096025073-2021-07-12T13:20:25.073Z/weathergpsiot.zip"
               },
               "Handler": "weatherGPSIoTLambda.weatherGPSIoT",
               "Runtime": "nodejs12.x",
@@ -212,7 +212,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/weathergpsiot/dev/1626094546729-2021-07-12T12:55:46.729Z/weathergpsiot.zip"
+                "S3Key": "serverless/weathergpsiot/dev/1626096025073-2021-07-12T13:20:25.073Z/weathergpsiot.zip"
               },
               "Handler": "index.handler",
               "Runtime": "nodejs12.x",
@@ -237,7 +237,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/weathergpsiot/dev/1626094546729-2021-07-12T12:55:46.729Z/weathergpsiot.zip"
+                "S3Key": "serverless/weathergpsiot/dev/1626096025073-2021-07-12T13:20:25.073Z/weathergpsiot.zip"
               },
               "Handler": "index.handler",
               "Runtime": "nodejs12.x",
@@ -255,34 +255,34 @@
               "RipLogGroup"
             ]
           },
-          "WeatherGPSIoTLambdaVersionOsLSFsss4gj8zKW9avVksVGwWmtTqXuwnJ5BoMc": {
+          "WeatherGPSIoTLambdaVersionA5kkwdMb9YOzUqO5QQDyFhFakQnSdRhhLCAwHZEg": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "WeatherGPSIoTLambdaFunction"
               },
-              "CodeSha256": "nZsQjgzOA0sDnA4ITvXZgcXCgP8JRIOlbi5LRqtTWa4="
+              "CodeSha256": "EUjCd41B0zkIwrbplkdUDYlO6mQwSes70NGiZ8EM2n0="
             }
           },
-          "WeatherGPSIoTWebLambdaVersion5LAJS5H6LP2hUODOhB2ho76M6Gqhc5pJgSu8Nw5tlA": {
+          "WeatherGPSIoTWebLambdaVersionoDdkvivyNJ0UTOHoiFFAcMZ7teuTB8O8pGKUXpsC8": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "WeatherGPSIoTWebLambdaFunction"
               },
-              "CodeSha256": "nZsQjgzOA0sDnA4ITvXZgcXCgP8JRIOlbi5LRqtTWa4="
+              "CodeSha256": "EUjCd41B0zkIwrbplkdUDYlO6mQwSes70NGiZ8EM2n0="
             }
           },
-          "RipLambdaVersionoEXKtrQXf5fEXBp35lmgMV29EDYjBC1nfLhzgNNVaI": {
+          "RipLambdaVersion6yJt6Bs3FL5loXlvXlkxAojFIFwwGLcGSOJZmgIY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "RipLambdaFunction"
               },
-              "CodeSha256": "nZsQjgzOA0sDnA4ITvXZgcXCgP8JRIOlbi5LRqtTWa4="
+              "CodeSha256": "EUjCd41B0zkIwrbplkdUDYlO6mQwSes70NGiZ8EM2n0="
             }
           },
           "ApiGatewayRestApi": {
@@ -500,7 +500,7 @@
               "RipLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1626094533456": {
+          "ApiGatewayDeployment1626096012032": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -602,7 +602,7 @@
           "WeatherGPSIoTLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "WeatherGPSIoTLambdaVersionOsLSFsss4gj8zKW9avVksVGwWmtTqXuwnJ5BoMc"
+              "Ref": "WeatherGPSIoTLambdaVersionA5kkwdMb9YOzUqO5QQDyFhFakQnSdRhhLCAwHZEg"
             },
             "Export": {
               "Name": "sls-weathergpsiot-dev-WeatherGPSIoTLambdaFunctionQualifiedArn"
@@ -611,7 +611,7 @@
           "WeatherGPSIoTWebLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "WeatherGPSIoTWebLambdaVersion5LAJS5H6LP2hUODOhB2ho76M6Gqhc5pJgSu8Nw5tlA"
+              "Ref": "WeatherGPSIoTWebLambdaVersionoDdkvivyNJ0UTOHoiFFAcMZ7teuTB8O8pGKUXpsC8"
             },
             "Export": {
               "Name": "sls-weathergpsiot-dev-WeatherGPSIoTWebLambdaFunctionQualifiedArn"
@@ -620,7 +620,7 @@
           "RipLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "RipLambdaVersionoEXKtrQXf5fEXBp35lmgMV29EDYjBC1nfLhzgNNVaI"
+              "Ref": "RipLambdaVersion6yJt6Bs3FL5loXlvXlkxAojFIFwwGLcGSOJZmgIY"
             },
             "Export": {
               "Name": "sls-weathergpsiot-dev-RipLambdaFunctionQualifiedArn"
@@ -749,7 +749,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "WeatherGPSIoTLambdaVersionOsLSFsss4gj8zKW9avVksVGwWmtTqXuwnJ5BoMc"
+        "versionLogicalId": "WeatherGPSIoTLambdaVersionA5kkwdMb9YOzUqO5QQDyFhFakQnSdRhhLCAwHZEg"
       },
       "weatherGPSIoTWeb": {
         "handler": "index.handler",
@@ -787,7 +787,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "WeatherGPSIoTWebLambdaVersion5LAJS5H6LP2hUODOhB2ho76M6Gqhc5pJgSu8Nw5tlA"
+        "versionLogicalId": "WeatherGPSIoTWebLambdaVersionoDdkvivyNJ0UTOHoiFFAcMZ7teuTB8O8pGKUXpsC8"
       },
       "rip": {
         "handler": "index.handler",
@@ -825,7 +825,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "RipLambdaVersionoEXKtrQXf5fEXBp35lmgMV29EDYjBC1nfLhzgNNVaI"
+        "versionLogicalId": "RipLambdaVersion6yJt6Bs3FL5loXlvXlkxAojFIFwwGLcGSOJZmgIY"
       }
     },
     "configValidationMode": "warn",
@@ -847,7 +847,7 @@
     "artifact": "C:\\Users\\w_yil\\OneDrive\\Desktop\\weatherGPSIoT\\.serverless\\weathergpsiot.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/weathergpsiot/dev/1626094546729-2021-07-12T12:55:46.729Z",
+    "artifactDirectoryName": "serverless/weathergpsiot/dev/1626096025073-2021-07-12T13:20:25.073Z",
     "artifact": "weathergpsiot.zip"
   }
 }
