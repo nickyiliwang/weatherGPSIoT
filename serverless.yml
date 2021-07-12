@@ -1,0 +1,16 @@
+service: weathergpsiot
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  profile: iamadmin
+  stage: dev
+
+functions:
+  weatherGPSIoT:
+    handler: handler.weatherGPSIoT
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'

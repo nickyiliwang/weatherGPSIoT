@@ -1,0 +1,16 @@
+{
+  "name": "weathergpsiot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cities": "^2.0.0",
+    "serverless": "^2.51.2",
+    "weather-js": "^2.0.0"
+  }
+}
