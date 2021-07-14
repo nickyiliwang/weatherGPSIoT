@@ -1,7 +1,7 @@
 const weather = require("weather-js");
 const cities = require("cities");
 
-module.exports.weatherGPSIoT = async function (event, context) {
+module.exports.handler = async function (event, context) {
   let promiseData = [];
 
   let weatherPromise = function (data) {

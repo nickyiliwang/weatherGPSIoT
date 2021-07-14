@@ -2,14 +2,16 @@
 //this lambda for extracting csv data from your s3 bucket
 //.csv to json object conversion for High Charts
 //to browse your bucket schema use https://bucket-name.s3.your-aws-region.amazonaws.com/your-key-name
+//example public bucket: https://brand-new-bucket-nickyiliwang.s3.us-east-1.amazonaws.com
+//private bucket: arn:aws:s3:::weather-gps-iot-nickyiliwang
 //keys = dataobjects within s3 bucket
 
-var AWS = require("aws-sdk");
+const AWS = require("aws-sdk");
 
-exports.handler = async function (event, context) {
-  var s3 = new AWS.S3({ apiVersion: "2006-03-01" });
+module.exports.handler = async function (event, context) {
+  const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
   var params = {
-    Bucket: "YOUR-S3-BUCKET-NAME",
+    Bucket: "weather-gps-iot-nickyiliwang",
     MaxKeys: 50,
   };
 
@@ -54,6 +56,7 @@ exports.handler = async function (event, context) {
   }
 
   return new Promise((resolve, reject) => {
+    // Common ways of extracting object from a bucket
     s3.listObjects(params, (err, objects) => {
       if (err) return console.log(err);
       if (objects && objects.Contents && objects.Contents.length > 0) {
@@ -64,7 +67,7 @@ exports.handler = async function (event, context) {
 
         let latestCsvData = contents[0];
         var params1 = {
-          Bucket: "YOUR-S3-BUCKET-NAME",
+          Bucket: "weather-gps-iot-nickyiliwang",
           Key: latestCsvData.Key,
         };
         s3.getObject(params1, (err, data) => {

@@ -7,32 +7,24 @@ provider:
   lambdaHashingVersion: 20201221
   profile: iamadmin
   stage: dev
+  # all actions on this bucket and objects: weather-gps-iot-nickyiliwang
   iam:
       role:
         statements:
           - Effect: 'Allow'
             Action:
-              - 's3:ListBucket'
-            Resource:
-              Fn::Join:
-                - ''
-                - - 'arn:aws:s3:::'
-                  - Ref: ServerlessDeploymentBucket
+              - '*'
+            Resource: arn:aws:s3:::weather-gps-iot-nickyiliwang
           - Effect: 'Allow'
             Action:
-              - 's3:PutObject'
-            Resource:
-              Fn::Join:
-                - ''
-                - - 'arn:aws:s3:::'
-                  - Ref: ServerlessDeploymentBucket
-                  - '/*'
+              - '*'
+            Resource: arn:aws:s3:::weather-gps-iot-nickyiliwang/*
 
 functions:
   weatherGPSIoT:
-    handler: /lambda/weatherGPSIoTLambda.weatherGPSIoT.
+    handler: lambda/weatherGPSIoTLambda.handler
   extractTransformCSVToJSON:
-    handler: /lambda/weatherGPSIoTLambda.weatherGPSIoT.
+    handler: lambda/extractTransformCSVToJSON.handler
   weatherGPSIoTWeb:
     handler: index.handler
     events:
