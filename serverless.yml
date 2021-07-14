@@ -7,10 +7,32 @@ provider:
   lambdaHashingVersion: 20201221
   profile: iamadmin
   stage: dev
+  iam:
+      role:
+        statements:
+          - Effect: 'Allow'
+            Action:
+              - 's3:ListBucket'
+            Resource:
+              Fn::Join:
+                - ''
+                - - 'arn:aws:s3:::'
+                  - Ref: ServerlessDeploymentBucket
+          - Effect: 'Allow'
+            Action:
+              - 's3:PutObject'
+            Resource:
+              Fn::Join:
+                - ''
+                - - 'arn:aws:s3:::'
+                  - Ref: ServerlessDeploymentBucket
+                  - '/*'
 
 functions:
   weatherGPSIoT:
-    handler: weatherGPSIoTLambda.weatherGPSIoT
+    handler: /lambda/weatherGPSIoTLambda.weatherGPSIoT.
+  extractTransformCSVToJSON:
+    handler: /lambda/weatherGPSIoTLambda.weatherGPSIoT.
   weatherGPSIoTWeb:
     handler: index.handler
     events:
