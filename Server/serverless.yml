@@ -32,6 +32,8 @@ functions:
           method: POST
           path: /
           cors: true
+
+# testing route
   rip:
     handler: index.handler
     events:
