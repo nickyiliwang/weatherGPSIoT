@@ -1,4 +1,4 @@
-# ESP32
+# ESP32 Docs
 
-## Hiding Secrets in the header file
-<!-- https://www.lukebrown.us/2021/04/25/hiding-credentials-on-platformio-projects/ -->
+[ESP32 Basics](docs/0.basics.md)
+[AWS IoT Analytics](iot-docs/1.iot-analytics.md)
