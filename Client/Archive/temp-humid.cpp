@@ -1,4 +1,3 @@
-#include <Arduino.h>
 // We are sending this data through iot analytics pipline
 // it pulls data from "outTopic", we are sending it like [{temperature: 12,
 // humidity: 12}] (note the array) We are taking this data and transforming it
@@ -23,6 +22,17 @@
 
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
+// sensitive
+#include "secrets.h"
+
+const char* ssid = ssid_name;
+const char* password = ssid_password;
+// endpoint
+const char* awsEndpoint = my_awsEndpoint;
+// certificates
+const char* certificate_pem_crt = my_aws_certificate_pem_crt;
+const char* private_pem_key = my_aws_private_pem_key;
+const char* rootCA = my_aws_rootCA;
 
 WiFiClientSecure wiFiClient;
 void msgReceived(char* topic, byte* payload, unsigned int len);
