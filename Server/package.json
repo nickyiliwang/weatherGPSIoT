@@ -11,8 +11,9 @@
   "dependencies": {
     "cities": "^2.0.0",
     "express": "^4.17.1",
-    "serverless": "^2.51.2",
+    "serverless": "^3.2.0",
     "serverless-http": "^2.7.0",
+    "serverless-offline": "^8.4.0",
     "weather-js": "^2.0.0"
   }
 }

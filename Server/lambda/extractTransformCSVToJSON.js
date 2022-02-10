@@ -1,4 +1,3 @@
-//Rename this file 'index.js'
 //this lambda for extracting csv data from your s3 bucket
 //.csv to json object conversion for High Charts
 //to browse your bucket schema use https://bucket-name.s3.your-aws-region.amazonaws.com/your-key-name

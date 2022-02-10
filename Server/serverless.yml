@@ -1,5 +1,5 @@
 service: weathergpsiot
-frameworkVersion: '2'
+# frameworkVersion: '2'
 
 provider:
   name: aws
@@ -11,6 +11,7 @@ provider:
   iam:
       role:
         statements:
+          # S3 bucket and objects
           - Effect: 'Allow'
             Action:
               - '*'
@@ -19,25 +20,31 @@ provider:
             Action:
               - '*'
             Resource: arn:aws:s3:::weather-gps-iot-nickyiliwang/*
+          # IoT Analytics 
+          - Effect: 'Allow' 
+            Resource: '*'         	
+            Action:
+              - 'lambda:InvokeFunction'
 
 functions:
   weatherGPSIoT:
     handler: lambda/weatherGPSIoTLambda.handler
   extractTransformCSVToJSON:
     handler: lambda/extractTransformCSVToJSON.handler
-  weatherGPSIoTWeb:
-    handler: index.handler
-    events:
-      - http:
-          method: POST
-          path: /
-          cors: true
 
-# testing route
-  rip:
-    handler: index.handler
-    events:
-      - http:
-          method: GET
-          path: /fuck
-          cors: true
+# # testing route
+#   test:
+#     handler: lambda/sls-http-express.handler
+#     events:
+#       - http:
+#           path: /
+#           method: ANY
+#           cors: true
+#       - http:
+#           path: /{any+}
+#           method: ANY
+#           cors: true
+
+
+plugins:
+- serverless-offline
