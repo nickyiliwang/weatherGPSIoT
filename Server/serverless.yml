@@ -28,9 +28,22 @@ provider:
 
 functions:
   weatherGPSIoT:
-    handler: lambda/weatherGPSIoTLambda.handler
+    handler: lambda/weatherGPSIoT.handler
   extractTransformCSVToJSON:
     handler: lambda/extractTransformCSVToJSON.handler
+
+# testing route
+  test:
+    handler: lambda/sandbox/sandbox-weatherGPSIoT.handler
+    # events:
+    #   - http:
+    #       path: /
+    #       method: ANY
+    #       cors: true
+    #   - http:
+    #       path: /{any+}
+    #       method: ANY
+    #       cors: true
 
 # # testing route
 #   test:
