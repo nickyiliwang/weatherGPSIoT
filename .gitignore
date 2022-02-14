@@ -13,3 +13,5 @@ jspm_packages
 /Client/.vscode/ipch
 
 /Client/include/secrets.h
+
+0.S3-site

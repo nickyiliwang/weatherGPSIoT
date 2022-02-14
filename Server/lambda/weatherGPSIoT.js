@@ -9,47 +9,79 @@ module.exports.handler = async function (event, context) {
       weather.find(
         { search: `${data.State} ${data.City}`, degreeType: "F" },
         function (err, result) {
-          if (err) console.log("error weather", err);
+          if (err) {
+            console.log("weather api error", err);
+            return;
+          }
 
           let weatherTempArr = [];
           if (result) {
             result.forEach((item) => {
-              console.log(item.current.temperature);
               weatherTempArr.push({
                 temperature: item.current.temperature,
                 humidity: item.current.humidity,
               });
             });
           }
-          data.weather = weatherTempArr;
+          data.weatherForecast = weatherTempArr;
           resolve(data);
         }
       );
     });
   };
 
+  // payload shape: [{ "temperature": 51, "humidity": 34, "lat": 38.8977, "long": -77.0365 }]
   event.forEach((message) => {
-    // do some stuff to `message`
-    //use incoming latitude nd longitude from event object to get city and state
-    const obj = cities.gps_lookup(message.lat, message.long);
+    const citiesLookedUp = cities.gps_lookup(message.lat, message.long);
 
-    //get ISO8601 date formate. natively supported in browser JS
-    var d = new Date();
-    var n = d.toISOString(); //move time-stamping function to local scope to prevent 'warm start' issues, and memory heap TSR issue
+    // setting and adding dates
+    const d = new Date();
+    const n = d.toISOString();
 
-    /******************* get current weather by using city and state fromm cities.js *******************/
-    let data = Object.assign({}, message, {
-      City: obj.city,
-      State: obj.state,
-      Time: n,
-    });
+    // get current weather by using city and state fromm cities.js
+    let data = {
+      ...message,
+      ...{
+        City: citiesLookedUp.city,
+        State: citiesLookedUp.state,
+        Time: n,
+      },
+    };
+
     promiseData.push(weatherPromise(data));
-    /******************* end *******************/
-  }); //end for each
+  });
 
   const responses = await Promise.all(promiseData);
+
   return responses;
 };
 
-// permission
-// aws lambda add-permission --function-name weathergpsiot-dev-weatherGPSIoT --statement-id 0710 --principal iotanalytics.amazonaws.com --action lambda:InvokeFunction
+// responses shape:
+//   [
+//     {
+//       temperature: 51,
+//       humidity: 34,
+//       lat: 39.0458,
+//       long: -76.6413,
+//       City: 'Gambrills',
+//       State: 'Maryland',
+//       Time: '2022-02-11T14:27:02.427Z',
+//       weatherForecast: [ { temperature: '42', humidity: '68' } ]
+//     }
+//   ]
+
+// ideal responses shape:
+// [
+//   {
+//     // local weather
+//     temperature: 51,
+//     humidity: 34,
+//     // local weather
+//     lat: 39.0458,
+//     long: -76.6413,
+//     City: "Gambrills",
+//     State: "Maryland",
+//     Time: "2022-02-11T14:27:02.427Z",
+//     weatherForecast: [{ temperature: "42", humidity: "68" }],
+//   },
+// ];

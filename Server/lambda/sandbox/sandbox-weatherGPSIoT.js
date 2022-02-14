@@ -10,14 +10,13 @@ module.exports.handler = async function (event, context) {
         { search: `${data.State} ${data.City}`, degreeType: "F" },
         function (err, result) {
           if (err) {
-            console.log("error weather", err);
+            console.log("weather api error", err);
             return;
           }
 
           let weatherTempArr = [];
           if (result) {
             result.forEach((item) => {
-              console.log(item.current.temperature);
               weatherTempArr.push({
                 temperature: item.current.temperature,
                 humidity: item.current.humidity,
@@ -39,6 +38,7 @@ module.exports.handler = async function (event, context) {
     const d = new Date();
     const n = d.toISOString();
 
+    // get current weather by using city and state fromm cities.js
     let data = {
       ...message,
       ...{
