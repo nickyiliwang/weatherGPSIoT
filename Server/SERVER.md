@@ -42,3 +42,5 @@ aws lambda invoke /dev/null \
   --profile iamadmin \
   --payload '[{ "temperature": 51, "humidity": 34, "lat": 38.8977, "long": -77.0365 }]' \
   --cli-binary-format raw-in-base64-out
+
+## QuickSight
