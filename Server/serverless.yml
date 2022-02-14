@@ -1,10 +1,10 @@
 service: weathergpsiot
+configValidationMode: error
 # frameworkVersion: '2'
 
 provider:
   name: aws
   runtime: nodejs12.x
-  lambdaHashingVersion: 20201221
   profile: iamadmin
   stage: dev
   # all actions on this bucket and objects: weather-gps-iot-nickyiliwang
@@ -12,19 +12,14 @@ provider:
       role:
         statements:
           # S3 bucket and objects
-          - Effect: 'Allow'
+          - Effect: Allow
             Action:
               - '*'
             Resource: arn:aws:s3:::weather-gps-iot-nickyiliwang
-          - Effect: 'Allow'
+          - Effect: Allow
             Action:
               - '*'
             Resource: arn:aws:s3:::weather-gps-iot-nickyiliwang/*
-          # IoT Analytics 
-          - Effect: 'Allow' 
-            Resource: '*'         	
-            Action:
-              - 'lambda:InvokeFunction'
 
 functions:
   weatherGPSIoT:
@@ -57,7 +52,6 @@ functions:
 #           path: /{any+}
 #           method: ANY
 #           cors: true
-
 
 plugins:
 - serverless-offline
