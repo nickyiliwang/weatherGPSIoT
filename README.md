@@ -11,4 +11,4 @@ Reference Docs:
 [Client](Client/CLIENT.md)
 
 TODO:
-1. 
+1. Combine sensor 

@@ -1,8 +1,15 @@
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
+#include <Adafruit_Sensor.h>
+#include <Arduino.h>
+#include <DHT.h>
+#include <DHT_U.h>
+#include <WebServer.h>
+#include <WiFi.h>
 
 // sensitive
 #include "secrets.h"
+#include "webserver.cpp"
 
 const char* ssid = ssid_name;
 const char* password = ssid_password;
