@@ -1,95 +1,96 @@
-/* ESP32 AWS IoT
- *
- * Simplest possible example (that I could come up with) of using an ESP32 with
- * AWS IoT.
- *
- * Author: Anthony Elder
- * License: Apache License v2
- */
+#include <Adafruit_Sensor.h>
+#include <Arduino.h>
+#include <DHT.h>
+#include <DHT_U.h>
+#include <WebServer.h>
+#include <WiFi.h>
 
-#include <PubSubClient.h>
-#include <WiFiClientSecure.h>
-// sensitive
 #include "secrets.h"
 
+#define DHTTYPE DHT11  // DHT 11
+
+/*Put your SSID & Password*/
 const char* ssid = ssid_name;
 const char* password = ssid_password;
-// endpoint
-const char* awsEndpoint = my_awsEndpoint;
-// certificates
-const char* certificate_pem_crt = my_aws_certificate_pem_crt;
-const char* private_pem_key = my_aws_private_pem_key;
-const char* rootCA = my_aws_rootCA;
 
-WiFiClientSecure wiFiClient;
-void msgReceived(char* topic, byte* payload, unsigned int len);
-PubSubClient pubSubClient(awsEndpoint, 8883, msgReceived, wiFiClient);
+WebServer server(80);
+
+// DHT Sensor pin
+uint8_t DHTPin = 4;
+
+// Initialize DHT sensor.
+DHT dht(DHTPin, DHTTYPE);
+
+float Temperature;
+float Humidity;
+
+void handle_NotFound() { server.send(404, "text/plain", "Not found"); }
+
+String SendHTML(float Temperaturestat, float Humiditystat) {
+  String ptr = "<!DOCTYPE html> <html>\n";
+  ptr +=
+      "<head><meta name=\"viewport\" content=\"width=device-width, "
+      "initial-scale=1.0, user-scalable=no\">\n";
+  ptr += "<title>ESP32 Weather Report</title>\n";
+  ptr +=
+      "<style>html { font-family: Helvetica; display: inline-block; margin: "
+      "0px auto; text-align: center;}\n";
+  ptr +=
+      "body{margin-top: 50px;} h1 {color: #444444;margin: 50px auto 30px;}\n";
+  ptr += "p {font-size: 24px;color: #444444;margin-bottom: 10px;}\n";
+  ptr += "</style>\n";
+  ptr += "</head>\n";
+  ptr += "<body>\n";
+  ptr += "<div id=\"webpage\">\n";
+  ptr += "<h1>ESP32 Weather Report</h1>\n";
+
+  ptr += "<p>Temperature: ";
+  ptr += (int)Temperaturestat;
+  ptr += "°C</p>";
+  ptr += "<p>Humidity: ";
+  ptr += (int)Humiditystat;
+  ptr += "%</p>";
+
+  ptr += "</div>\n";
+  ptr += "</body>\n";
+  ptr += "</html>\n";
+  return ptr;
+}
+
+void handle_OnConnect() {
+  Temperature = dht.readTemperature();  // Gets the values of the temperature
+  server.send(200, "text/html", SendHTML(Temperature, Humidity));
+}
 
 void setup() {
   Serial.begin(115200);
-  delay(50);
-  Serial.println();
-  Serial.println("ESP32 AWS IoT Example");
-  Serial.printf("SDK version: %s\n", ESP.getSdkVersion());
+  delay(100);
 
-  Serial.print("Connecting to ");
-  Serial.print(ssid);
+  pinMode(DHTPin, INPUT);
+
+  dht.begin();
+
+  Serial.println("Connecting to ");
+  Serial.println(ssid);
+
+  // connect to your local wi-fi network
   WiFi.begin(ssid, password);
-  WiFi.waitForConnectResult();
-  Serial.print(", WiFi connected, IP address: ");
+
+  // check wi-fi is connected to wi-fi network
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected..!");
+  Serial.print("Got IP: ");
   Serial.println(WiFi.localIP());
 
-  wiFiClient.setCACert(rootCA);
-  wiFiClient.setCertificate(certificate_pem_crt);
-  wiFiClient.setPrivateKey(private_pem_key);
+  server.on("/", handle_OnConnect);
+  server.onNotFound(handle_NotFound);
+
+  server.begin();
+  Serial.println("HTTP server started");
 }
 
-void pubSubCheckConnect() {
-  if (!pubSubClient.connected()) {
-    Serial.print("PubSubClient connecting to: ");
-    Serial.print(awsEndpoint);
-    while (!pubSubClient.connected()) {
-      Serial.print(".");
-      pubSubClient.connect("ESPthingXXXX");
-      delay(1000);
-    }
-    Serial.println(" connected");
-    pubSubClient.subscribe("inTopic");
-  }
-  pubSubClient.loop();
-}
-
-unsigned long lastPublish;
-int msgCount;
-
-void loop() {
-  pubSubCheckConnect();
-
-  // If you need to increase buffer size, then you need to change
-  // MQTT_MAX_PACKET_SIZE in PubSubClient.h
-  char fakeData[128];
-
-  int t = random(30, 95);  // fake number range, adjust as you like
-  int h = random(50, 95);
-
-  snprintf(fakeData, sizeof(fakeData), "{\"temperature\":%d,\"humidity\":%d}",
-           t, h);
-
-  if (millis() - lastPublish > 10000) {
-    boolean rc = pubSubClient.publish("outTopic", fakeData);
-    Serial.print("Published, rc=");
-    Serial.print((rc ? "OK: " : "FAILED: "));
-    Serial.println(fakeData);
-    lastPublish = millis();
-  }
-}
-
-void msgReceived(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message received on ");
-  Serial.print(topic);
-  Serial.print(": ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
-}
+void loop() { server.handleClient(); }
