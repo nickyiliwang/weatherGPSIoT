@@ -1,26 +1,16 @@
-#include <Adafruit_Sensor.h>
-#include <Arduino.h>
-#include <DHT.h>
-#include <DHT_U.h>
-#include <PubSubClient.h>
-#include <WebServer.h>
-#include <WiFi.h>
-#include <WiFiClientSecure.h>
+/* ESP32 AWS IoT
+ *
+ * Simplest possible example (that I could come up with) of using an ESP32 with
+ * AWS IoT.
+ *
+ * Author: Anthony Elder
+ * License: Apache License v2
+ */
 
+#include <PubSubClient.h>
+#include <WiFiClientSecure.h>
 // sensitive
 #include "secrets.h"
-#include "webserver.cpp"
-
-#define DHTTYPE DHT11  // DHT 11
-
-// DHT Sensor pin
-uint8_t DHTPin = 4;
-
-// Initialize DHT sensor.
-DHT dht(DHTPin, DHTTYPE);
-
-float Temperature;
-float Humidity;
 
 const char* ssid = ssid_name;
 const char* password = ssid_password;
@@ -34,6 +24,25 @@ const char* rootCA = my_aws_rootCA;
 WiFiClientSecure wiFiClient;
 void msgReceived(char* topic, byte* payload, unsigned int len);
 PubSubClient pubSubClient(awsEndpoint, 8883, msgReceived, wiFiClient);
+
+void setup() {
+  Serial.begin(115200);
+  delay(50);
+  Serial.println();
+  Serial.println("ESP32 AWS IoT Example");
+  Serial.printf("SDK version: %s\n", ESP.getSdkVersion());
+
+  Serial.print("Connecting to ");
+  Serial.print(ssid);
+  WiFi.begin(ssid, password);
+  WiFi.waitForConnectResult();
+  Serial.print(", WiFi connected, IP address: ");
+  Serial.println(WiFi.localIP());
+
+  wiFiClient.setCACert(rootCA);
+  wiFiClient.setCertificate(certificate_pem_crt);
+  wiFiClient.setPrivateKey(private_pem_key);
+}
 
 void pubSubCheckConnect() {
   if (!pubSubClient.connected()) {
@@ -50,30 +59,6 @@ void pubSubCheckConnect() {
   pubSubClient.loop();
 }
 
-void setup() {
-  Serial.begin(115200);
-  delay(100);
-
-  pinMode(DHTPin, INPUT);
-
-  dht.begin();
-
-  Serial.println();
-  Serial.println("Weather Station");
-  Serial.printf("SDK version: %s\n", ESP.getSdkVersion());
-
-  Serial.print("Connecting to ");
-  Serial.print(ssid);
-  WiFi.begin(ssid, password);
-  WiFi.waitForConnectResult();
-  Serial.print(", WiFi connected, IP address: ");
-  Serial.println(WiFi.localIP());
-
-  wiFiClient.setCACert(rootCA);
-  wiFiClient.setCertificate(certificate_pem_crt);
-  wiFiClient.setPrivateKey(private_pem_key);
-}
-
 unsigned long lastPublish;
 int msgCount;
 
@@ -82,35 +67,19 @@ void loop() {
 
   // If you need to increase buffer size, then you need to change
   // MQTT_MAX_PACKET_SIZE in PubSubClient.h
-  char iotData[128];
-  int t = dht.readTemperature();  // Gets the values of the temperature
-  int h = dht.readHumidity();     // Gets the values of the humidity
+  char fakeData[128];
 
-  int cityNumber =
-      random(0, 4);  // range is 0- total # cities, range gets rounded down by
-                     // random function so result is always n-1
-  float latt;
-  float lon;
-  // Moab, Tuscon, Chicago, Stevenson
-  float gps[][2] = {{38.5743966, -109.5689282},
-                    {32.1558328, -111.0238918},
-                    {41.881832, -87.623177},
-                    {45.6944496, -121.9115935}};
-  latt = gps[cityNumber][0];
-  lon = gps[cityNumber][1];
+  int t = random(30, 95);  // fake number range, adjust as you like
+  int h = random(50, 95);
 
-  // Don't overflow your buffer! use short names and data types, the MQTT
-  // library has package size limitations per cycle
-  snprintf(iotData, sizeof(iotData),
-           "{\"uptime\":%lu,\"intemp\":%d,\"inhumid\":%d,\"lat\":%2.7f,"
-           "\"long\":%3.7f}",
-           millis() / 1000, t, h, latt, lon);
+  snprintf(fakeData, sizeof(fakeData), "{\"temperature\":%d,\"humidity\":%d}",
+           t, h);
 
   if (millis() - lastPublish > 10000) {
-    boolean rc = pubSubClient.publish("outTopic", iotData);
+    boolean rc = pubSubClient.publish("outTopic", fakeData);
     Serial.print("Published, rc=");
     Serial.print((rc ? "OK: " : "FAILED: "));
-    Serial.println(iotData);
+    Serial.println(fakeData);
     lastPublish = millis();
   }
 }
