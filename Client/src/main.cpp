@@ -6,8 +6,6 @@
 #include <WebServer.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-
-// sensitive
 #include <secrets.h>
 
 #define DHTTYPE DHT11  // DHT 11
@@ -21,6 +19,7 @@ DHT dht(DHTPin, DHTTYPE);
 float Temperature;
 float Humidity;
 
+// Wifi
 const char *ssid = ssid_name;
 const char *password = ssid_password;
 // endpoint
@@ -50,8 +49,8 @@ void pubSubCheckConnect() {
 }
 
 void updateTempHumid() {
-  Temperature = dht.readTemperature();  // Gets the values of the temperature
-  Humidity = dht.readHumidity();        // Gets the values of the humidity
+  Temperature = dht.readTemperature();
+  Humidity = dht.readHumidity();
 }
 
 void setup() {
@@ -88,6 +87,7 @@ void loop() {
   char iotData[128];
   updateTempHumid();
 
+  // geolocation
   float latitude;
   float longitude;
   // RichmonHill, ON
@@ -95,6 +95,7 @@ void loop() {
   latitude = gps[0][0];
   longitude = gps[0][1];
 
+  // payload
   snprintf(iotData, sizeof(iotData),
            "{\"uptime\":%lu,\"intemp\":%f,\"inhumid\":%f,\"lat\":%2.7f,"
            "\"long\":%3.7f}",
