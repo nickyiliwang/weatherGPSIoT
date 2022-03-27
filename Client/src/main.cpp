@@ -8,10 +8,9 @@
 #include <WiFiClientSecure.h>
 
 // sensitive
-#include "secrets.h"
-#include "webserver.cpp"
+#include <secrets.h>
 
-#define DHTTYPE DHT11  // DHT 11
+#define DHTTYPE DHT11 // DHT 11
 
 // DHT Sensor pin
 uint8_t DHTPin = 4;
@@ -22,24 +21,27 @@ DHT dht(DHTPin, DHTTYPE);
 float Temperature;
 float Humidity;
 
-const char* ssid = ssid_name;
-const char* password = ssid_password;
+const char *ssid = ssid_name;
+const char *password = ssid_password;
 // endpoint
-const char* awsEndpoint = my_awsEndpoint;
+const char *awsEndpoint = my_awsEndpoint;
 // certificates
-const char* certificate_pem_crt = my_aws_certificate_pem_crt;
-const char* private_pem_key = my_aws_private_pem_key;
-const char* rootCA = my_aws_rootCA;
+const char *certificate_pem_crt = my_aws_certificate_pem_crt;
+const char *private_pem_key = my_aws_private_pem_key;
+const char *rootCA = my_aws_rootCA;
 
 WiFiClientSecure wiFiClient;
-void msgReceived(char* topic, byte* payload, unsigned int len);
+void msgReceived(char *topic, byte *payload, unsigned int len);
 PubSubClient pubSubClient(awsEndpoint, 8883, msgReceived, wiFiClient);
 
-void pubSubCheckConnect() {
-  if (!pubSubClient.connected()) {
+void pubSubCheckConnect()
+{
+  if (!pubSubClient.connected())
+  {
     Serial.print("PubSubClient connecting to: ");
     Serial.print(awsEndpoint);
-    while (!pubSubClient.connected()) {
+    while (!pubSubClient.connected())
+    {
       Serial.print(".");
       pubSubClient.connect("ESPthingXXXX");
       delay(1000);
@@ -50,7 +52,14 @@ void pubSubCheckConnect() {
   pubSubClient.loop();
 }
 
-void setup() {
+void updateTempHumid()
+{
+  Temperature = dht.readTemperature(); // Gets the values of the temperature
+  Humidity = dht.readHumidity();       // Gets the values of the humidity
+}
+
+void setup()
+{
   Serial.begin(115200);
   delay(100);
 
@@ -77,49 +86,45 @@ void setup() {
 unsigned long lastPublish;
 int msgCount;
 
-void loop() {
+void loop()
+{
   pubSubCheckConnect();
 
   // If you need to increase buffer size, then you need to change
   // MQTT_MAX_PACKET_SIZE in PubSubClient.h
   char iotData[128];
-  int t = dht.readTemperature();  // Gets the values of the temperature
-  int h = dht.readHumidity();     // Gets the values of the humidity
+  updateTempHumid();
 
-  int cityNumber =
-      random(0, 4);  // range is 0- total # cities, range gets rounded down by
-                     // random function so result is always n-1
-  float latt;
-  float lon;
-  // Moab, Tuscon, Chicago, Stevenson
-  float gps[][2] = {{38.5743966, -109.5689282},
-                    {32.1558328, -111.0238918},
-                    {41.881832, -87.623177},
-                    {45.6944496, -121.9115935}};
-  latt = gps[cityNumber][0];
-  lon = gps[cityNumber][1];
+  float latitude;
+  float longitude;
+  // RichmonHill, ON
+  float gps[][2] = {{43.8828, -79.4403}};
+  latitude = gps[0][0];
+  longitude = gps[0][1];
 
-  // Don't overflow your buffer! use short names and data types, the MQTT
-  // library has package size limitations per cycle
   snprintf(iotData, sizeof(iotData),
-           "{\"uptime\":%lu,\"intemp\":%d,\"inhumid\":%d,\"lat\":%2.7f,"
+           "{\"uptime\":%lu,\"intemp\":%f,\"inhumid\":%f,\"lat\":%2.7f,"
            "\"long\":%3.7f}",
-           millis() / 1000, t, h, latt, lon);
+           millis() / 1000, Temperature, Humidity, latitude, longitude);
 
-  if (millis() - lastPublish > 10000) {
-    boolean rc = pubSubClient.publish("outTopic", iotData);
-    Serial.print("Published, rc=");
-    Serial.print((rc ? "OK: " : "FAILED: "));
+  if (millis() - lastPublish > 10000)
+  {
     Serial.println(iotData);
     lastPublish = millis();
+    // boolean rc = pubSubClient.publish("outTopic", iotData);
+    // Serial.print("Published, rc=");
+    // Serial.print((rc ? "OK: " : "FAILED: "));
+    // Serial.println(iotData);
   }
 }
 
-void msgReceived(char* topic, byte* payload, unsigned int length) {
+void msgReceived(char *topic, byte *payload, unsigned int length)
+{
   Serial.print("Message received on ");
   Serial.print(topic);
   Serial.print(": ");
-  for (int i = 0; i < length; i++) {
+  for (int i = 0; i < length; i++)
+  {
     Serial.print((char)payload[i]);
   }
   Serial.println();
