@@ -107,7 +107,7 @@ void loop()
            "\"long\":%3.7f}",
            millis() / 1000, Temperature, Humidity, latitude, longitude);
 
-  if (millis() - lastPublish > 10000)
+  if (millis() - lastPublish > 10000) // 10 seconds increments
   {
     Serial.println(iotData);
     lastPublish = millis();
