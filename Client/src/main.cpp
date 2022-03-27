@@ -10,7 +10,7 @@
 // sensitive
 #include <secrets.h>
 
-#define DHTTYPE DHT11 // DHT 11
+#define DHTTYPE DHT11  // DHT 11
 
 // DHT Sensor pin
 uint8_t DHTPin = 4;
@@ -34,14 +34,11 @@ WiFiClientSecure wiFiClient;
 void msgReceived(char *topic, byte *payload, unsigned int len);
 PubSubClient pubSubClient(awsEndpoint, 8883, msgReceived, wiFiClient);
 
-void pubSubCheckConnect()
-{
-  if (!pubSubClient.connected())
-  {
+void pubSubCheckConnect() {
+  if (!pubSubClient.connected()) {
     Serial.print("PubSubClient connecting to: ");
     Serial.print(awsEndpoint);
-    while (!pubSubClient.connected())
-    {
+    while (!pubSubClient.connected()) {
       Serial.print(".");
       pubSubClient.connect("ESPthingXXXX");
       delay(1000);
@@ -52,14 +49,12 @@ void pubSubCheckConnect()
   pubSubClient.loop();
 }
 
-void updateTempHumid()
-{
-  Temperature = dht.readTemperature(); // Gets the values of the temperature
-  Humidity = dht.readHumidity();       // Gets the values of the humidity
+void updateTempHumid() {
+  Temperature = dht.readTemperature();  // Gets the values of the temperature
+  Humidity = dht.readHumidity();        // Gets the values of the humidity
 }
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
   delay(100);
 
@@ -86,8 +81,7 @@ void setup()
 unsigned long lastPublish;
 int msgCount;
 
-void loop()
-{
+void loop() {
   pubSubCheckConnect();
 
   // Change MQTT_MAX_PACKET_SIZE in PubSubClient.h for bigger buffer
@@ -106,22 +100,20 @@ void loop()
            "\"long\":%3.7f}",
            millis() / 1000, Temperature, Humidity, latitude, longitude);
 
-  if (millis() - lastPublish > 10000)
-  {
+  if (millis() - lastPublish > 10000) {
     boolean rc = pubSubClient.publish("outTopic", iotData);
     Serial.print("Published, rc=");
     Serial.print((rc ? "OK: " : "FAILED: "));
     Serial.println(iotData);
+    lastPublish = millis();
   }
 }
 
-void msgReceived(char *topic, byte *payload, unsigned int length)
-{
+void msgReceived(char *topic, byte *payload, unsigned int length) {
   Serial.print("Message received on ");
   Serial.print(topic);
   Serial.print(": ");
-  for (int i = 0; i < length; i++)
-  {
+  for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
   Serial.println();
