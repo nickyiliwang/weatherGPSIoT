@@ -18,6 +18,7 @@ const char* passwd = ssid_password;
 WifiLocation location(googleApiKey);
 
 void setup() {
+  // Serial.begin(115200);
   Serial.begin(115200);
   // Connect to WPA/WPA2 network
 #ifdef ARDUINO_ARCH_ESP32
