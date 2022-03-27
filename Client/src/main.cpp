@@ -1,15 +1,26 @@
-#include <PubSubClient.h>
-#include <WiFiClientSecure.h>
 #include <Adafruit_Sensor.h>
 #include <Arduino.h>
 #include <DHT.h>
 #include <DHT_U.h>
+#include <PubSubClient.h>
 #include <WebServer.h>
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 
 // sensitive
 #include "secrets.h"
 #include "webserver.cpp"
+
+#define DHTTYPE DHT11  // DHT 11
+
+// DHT Sensor pin
+uint8_t DHTPin = 4;
+
+// Initialize DHT sensor.
+DHT dht(DHTPin, DHTTYPE);
+
+float Temperature;
+float Humidity;
 
 const char* ssid = ssid_name;
 const char* password = ssid_password;
@@ -41,9 +52,14 @@ void pubSubCheckConnect() {
 
 void setup() {
   Serial.begin(115200);
-  delay(50);
+  delay(100);
+
+  pinMode(DHTPin, INPUT);
+
+  dht.begin();
+
   Serial.println();
-  Serial.println("ESP32 AWS GPS Weather Example by SDB for Udemy");
+  Serial.println("Weather Station");
   Serial.printf("SDK version: %s\n", ESP.getSdkVersion());
 
   Serial.print("Connecting to ");
@@ -66,9 +82,9 @@ void loop() {
 
   // If you need to increase buffer size, then you need to change
   // MQTT_MAX_PACKET_SIZE in PubSubClient.h
-  char fakeData[128];
-  int t = random(30, 110);  // fake number range, adjust as you like
-  int h = random(40, 100);
+  char iotData[128];
+  int t = dht.readTemperature();  // Gets the values of the temperature
+  int h = dht.readHumidity();     // Gets the values of the humidity
 
   int cityNumber =
       random(0, 4);  // range is 0- total # cities, range gets rounded down by
@@ -85,16 +101,16 @@ void loop() {
 
   // Don't overflow your buffer! use short names and data types, the MQTT
   // library has package size limitations per cycle
-  snprintf(fakeData, sizeof(fakeData),
+  snprintf(iotData, sizeof(iotData),
            "{\"uptime\":%lu,\"intemp\":%d,\"inhumid\":%d,\"lat\":%2.7f,"
            "\"long\":%3.7f}",
            millis() / 1000, t, h, latt, lon);
 
   if (millis() - lastPublish > 10000) {
-    boolean rc = pubSubClient.publish("outTopic", fakeData);
+    boolean rc = pubSubClient.publish("outTopic", iotData);
     Serial.print("Published, rc=");
     Serial.print((rc ? "OK: " : "FAILED: "));
-    Serial.println(fakeData);
+    Serial.println(iotData);
     lastPublish = millis();
   }
 }
